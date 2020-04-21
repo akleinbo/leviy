@@ -85,7 +85,7 @@ class TaskCreateCommand extends Command
         # output
         $io->title('Task Summary');
         $io->table(
-            ['Parameters', 'Values'],
+            ['Items', 'Values'],
             [
                 ['Title', $taskTitle],
                 ['Description', $taskDescription],

@@ -46,8 +46,9 @@ class TasksExportCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $tasks = [];
-        $tasks[] = ['Title', 'Description', 'Responsible', 'Client', 'Start', 'End'];
+        $tasks[] = ['Title', 'Description', 'Responsible', 'Client', 'Start', 'End', 'Total'];
         foreach($this->entityManager->getRepository('App:Tasks')->findAll() as $task) {
+            $taskTotalTime = ($task->getEnd()->diff($task->getStart(), true));
             $tasks[] = [
                 'title' => $task->getTitle(),
                 'description' => $task->getDescription(),
@@ -55,6 +56,7 @@ class TasksExportCommand extends Command
                 'client' => $task->getClient(),
                 'start' => $task->getStart()->format('H:i'),
                 'end' => $task->getEnd()->format('H:i'),
+                'total' => $taskTotalTime->format('%H') . ':' . $taskTotalTime->format('%I')
             ];
         }
 
