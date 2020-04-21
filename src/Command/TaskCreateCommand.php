@@ -67,12 +67,12 @@ class TaskCreateCommand extends Command
         $helper = $this->getHelper('question');
 
         # task
-        $taskTitle          = new Question('Please give your task a title:', '');
-        $taskDescription    = new Question('Please give your task a brief description:', '');
-        $taskResponsible    = new Question('Please assign task to responsible:', '');
-        $taskClient         = new Question('Please assign task to client(customer):', '');
-        $taskStart          = new Question('Please enter start datetime:', '');
-        $taskEnd            = new Question('Please enter end datetime:', '');
+        $taskTitle          = new Question('Please give your task a title: ', '');
+        $taskDescription    = new Question('Please give your task a brief description: ', '');
+        $taskResponsible    = new Question('Please assign task to responsible: ', '');
+        $taskClient         = new Question('Please assign task to client(customer): ', '');
+        $taskStart          = new Question('Please enter start datetime(Y-m-d H:i:s): ', '');
+        $taskEnd            = new Question('Please enter end datetime(Y-m-d H:i:s): ', '');
 
         # questions
         $taskTitle          = $helper->ask($input, $output, $taskTitle);
