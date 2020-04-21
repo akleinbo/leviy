@@ -40,6 +40,11 @@ class Tasks
     /**
      * @ORM\Column(type="datetime")
      */
+    private $start;
+
+    /**
+     * @ORM\Column(type="string")
+     */
     private $scheduled;
 
     /**
@@ -149,6 +154,22 @@ class Tasks
     public function setClient($client)
     {
         $this->client = $client;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStart()
+    {
+        return $this->start;
+    }
+
+    /**
+     * @param mixed $start
+     */
+    public function setStart($start)
+    {
+        $this->start = $start;
     }
 
     /**

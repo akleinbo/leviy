@@ -71,6 +71,8 @@ class TaskCreateCommand extends Command
             'friday',
             'saturday',
             'sunday',
+            'first weekday',
+            'last weekday',
         ], 0);
         $taskRepeat         = new ChoiceQuestion('Repeat task ', [
             'none',
@@ -90,10 +92,7 @@ class TaskCreateCommand extends Command
 
         # start
         $taskStart = new DateTime('now');
-        // $taskStart->setTimestamp(strtotime($taskSchedule));
-
-        // dd($taskDuration);
-
+        $taskStart->setTimestamp(strtotime($taskSchedule));
         # output
         $io->title('Task Summary');
         $io->table(
@@ -119,7 +118,8 @@ class TaskCreateCommand extends Command
             $task->setResponsible($taskResponsible);
             $task->setClient($taskClient);
             $task->setDuration((int)$taskDuration);
-            $task->setScheduled($taskStart);
+            $task->setScheduled($taskSchedule);
+            $task->setStart($taskStart);
             $task->setToRepeat($taskRepeat);
 
             $this->entityManager->persist($task);
