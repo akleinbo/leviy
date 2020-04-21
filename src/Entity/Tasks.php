@@ -40,12 +40,17 @@ class Tasks
     /**
      * @ORM\Column(type="datetime")
      */
-    private $start;
+    private $scheduled;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="integer")
      */
-    private $end;
+    private $duration;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $toRepeat;
 
     /**
      * @ORM\Column(type="datetime")
@@ -149,63 +154,79 @@ class Tasks
     /**
      * @return mixed
      */
-    public function getStart()
+    public function getScheduled()
     {
-        return $this->start;
+        return $this->scheduled;
     }
 
     /**
-     * @param mixed $start
+     * @param mixed $scheduled
      */
-    public function setStart($start)
+    public function setScheduled($scheduled)
     {
-        $this->start = $start;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEnd()
-    {
-        return $this->end;
-    }
-
-    /**
-     * @param mixed $end
-     */
-    public function setEnd($end)
-    {
-        $this->end = $end;
+        $this->scheduled = $scheduled;
     }
 
     /**
      * @return mixed
      */
-    public function getCreated()
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
+     * @param mixed $duration
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getToRepeat()
+    {
+        return $this->toRepeat;
+    }
+
+    /**
+     * @param mixed $toRepeat
+     */
+    public function setToRepeat($toRepeat)
+    {
+        $this->toRepeat = $toRepeat;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreated(): DateTime
     {
         return $this->created;
     }
 
     /**
-     * @param mixed $created
+     * @param DateTime $created
      */
-    public function setCreated($created)
+    public function setCreated(DateTime $created)
     {
         $this->created = $created;
     }
 
     /**
-     * @return mixed
+     * @return DateTime
      */
-    public function getModified()
+    public function getModified(): DateTime
     {
         return $this->modified;
     }
 
     /**
-     * @param mixed $modified
+     * @param DateTime $modified
      */
-    public function setModified($modified)
+    public function setModified(DateTime $modified)
     {
         $this->modified = $modified;
     }

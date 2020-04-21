@@ -3,6 +3,8 @@
 namespace App\Command;
 
 use App\Entity\Tasks;
+use DateInterval;
+use DatePeriod;
 use DateTime;
 use Exception;
 use Doctrine\ORM\EntityManager;
@@ -14,6 +16,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -41,18 +44,6 @@ class TaskCreateCommand extends Command
         $this->entityManager = $entityManager;
     }
 
-//    /**
-//     *
-//     */
-//    protected function configure()
-//    {
-//        $this
-//            ->setDescription('Add a short description for your command')
-//            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-//            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-//        ;
-//    }
-
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
@@ -67,20 +58,41 @@ class TaskCreateCommand extends Command
         $helper = $this->getHelper('question');
 
         # task
-        $taskTitle          = new Question('Please give your task a title: ', '');
-        $taskDescription    = new Question('Please give your task a brief description: ', '');
-        $taskResponsible    = new Question('Please assign task to responsible: ', '');
-        $taskClient         = new Question('Please assign task to client(customer): ', '');
-        $taskStart          = new Question('Please enter start datetime(Y-m-d H:i:s): ', '');
-        $taskEnd            = new Question('Please enter end datetime(Y-m-d H:i:s): ', '');
+        $taskTitle          = new Question('Please give your task a TITLE: ', 'Title');
+        $taskDescription    = new Question('Please give your task a brief DESCRIPTION: ', 'Description');
+        $taskResponsible    = new Question('Please assign task to RESPONSIBLE: ', 'Responsible');
+        $taskClient         = new Question('Please assign task to CLIENT: ', 'Client');
+        $taskDuration       = new Question('Please enter task DURATION in minutes: ', 30);
+        $taskSchedule       = new ChoiceQuestion('Please SCHEDULE task: ', [
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+            'saturday',
+            'sunday',
+        ], 0);
+        $taskRepeat         = new ChoiceQuestion('Repeat task ', [
+            'none',
+            'daily',
+            'weekly',
+            'monthly'
+        ], 2);
 
         # questions
         $taskTitle          = $helper->ask($input, $output, $taskTitle);
         $taskDescription    = $helper->ask($input, $output, $taskDescription);
         $taskResponsible    = $helper->ask($input, $output, $taskResponsible);
         $taskClient         = $helper->ask($input, $output, $taskClient);
-        $taskStart          = $helper->ask($input, $output, $taskStart);
-        $taskEnd            = $helper->ask($input, $output, $taskEnd);
+        $taskDuration       = $helper->ask($input, $output, $taskDuration);
+        $taskSchedule       = $helper->ask($input, $output, $taskSchedule);
+        $taskRepeat         = $helper->ask($input, $output, $taskRepeat);
+
+        # start
+        $taskStart = new DateTime('now');
+        // $taskStart->setTimestamp(strtotime($taskSchedule));
+
+        // dd($taskDuration);
 
         # output
         $io->title('Task Summary');
@@ -91,8 +103,10 @@ class TaskCreateCommand extends Command
                 ['Description', $taskDescription],
                 ['Responsible', $taskResponsible],
                 ['Client', $taskClient],
-                ['Start', $taskStart],
-                ['End', $taskEnd]
+                ['Duration', $taskDuration],
+                ['Date', $taskStart->format('Y-m-d')],
+                ['Scheduled', $taskSchedule],
+                ['Repeat', $taskRepeat]
             ]
         );
 
@@ -104,8 +118,9 @@ class TaskCreateCommand extends Command
             $task->setDescription($taskDescription);
             $task->setResponsible($taskResponsible);
             $task->setClient($taskClient);
-            $task->setStart(new DateTime($taskStart));
-            $task->setEnd(new DateTime($taskEnd));
+            $task->setDuration((int)$taskDuration);
+            $task->setScheduled($taskStart);
+            $task->setToRepeat($taskRepeat);
 
             $this->entityManager->persist($task);
             $this->entityManager->flush();
