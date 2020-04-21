@@ -110,7 +110,7 @@ class TaskCreateCommand extends Command
             $this->entityManager->persist($task);
             $this->entityManager->flush();
 
-            $io->success('Success, your task is now saved to the DB. Run app:tasks-export for .CSV export');
+            $io->success('Success, your task is now saved to the DB.');
             return 0;
         }
 
