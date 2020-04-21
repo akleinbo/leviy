@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use App\Entity\Tasks;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -58,7 +60,7 @@ class TaskCreateCommand extends Command
         # task
         $taskTitle          = new Question('Please give your task a title:', '');
         $taskDescription    = new Question('Please give your task a brief description:', '');
-        $tasResponsible     = new Question('Please assign task to responsible:', '');
+        $taskResponsible    = new Question('Please assign task to responsible:', '');
         $taskClient         = new Question('Please assign task to client(customer):', '');
         $taskStart          = new Question('Please enter start datetime:', '');
         $taskEnd            = new Question('Please enter end datetime:', '');
@@ -66,7 +68,7 @@ class TaskCreateCommand extends Command
         # questions
         $taskTitle          = $helper->ask($input, $output, $taskTitle);
         $taskDescription    = $helper->ask($input, $output, $taskDescription);
-        $tasResponsible     = $helper->ask($input, $output, $tasResponsible);
+        $taskResponsible    = $helper->ask($input, $output, $taskResponsible);
         $taskClient         = $helper->ask($input, $output, $taskClient);
         $taskStart          = $helper->ask($input, $output, $taskStart);
         $taskEnd            = $helper->ask($input, $output, $taskEnd);
@@ -78,7 +80,7 @@ class TaskCreateCommand extends Command
             [
                 ['Title', $taskTitle],
                 ['Description', $taskDescription],
-                ['Responsible', $tasResponsible],
+                ['Responsible', $taskResponsible],
                 ['Client', $taskClient],
                 ['Start', $taskStart],
                 ['End', $taskEnd]
@@ -89,7 +91,18 @@ class TaskCreateCommand extends Command
 
         if (!$helper->ask($input, $output, $question)) {
 
-            $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+            $task = new Tasks();
+            $task->setTitle($taskTitle);
+            $task->setDescription($taskTitle);
+            $task->setSpecialist($taskResponsible);
+            $task->setCompany($taskClient);
+            $task->setStart(new DateTime($taskStart));
+            $task->setEnd(new DateTime($taskStart));
+
+            $this->entityManager->persist($task);
+            $this->entityManager->flush();
+
+            $io->success('Success, your task is no saved to the DB. Run app:tasks-export for .CSV export');
             return 0;
         }
 
