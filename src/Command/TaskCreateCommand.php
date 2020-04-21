@@ -23,7 +23,7 @@ class TaskCreateCommand extends Command
     /**
      * @var string
      */
-    protected static $defaultName = 'app:task-create';
+    protected static $defaultName = 'app:create-task';
 
     /**
      * [$entityManager description]
@@ -41,14 +41,17 @@ class TaskCreateCommand extends Command
         $this->entityManager = $entityManager;
     }
 
-    protected function configure()
-    {
-        $this
-            ->setDescription('Add a short description for your command')
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
-    }
+//    /**
+//     *
+//     */
+//    protected function configure()
+//    {
+//        $this
+//            ->setDescription('Add a short description for your command')
+//            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
+//            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+//        ;
+//    }
 
     /**
      * @param InputInterface  $input
@@ -96,19 +99,18 @@ class TaskCreateCommand extends Command
         $question = new ConfirmationQuestion('Is this correct?', false);
 
         if (!$helper->ask($input, $output, $question)) {
-
             $task = new Tasks();
             $task->setTitle($taskTitle);
-            $task->setDescription($taskTitle);
+            $task->setDescription($taskDescription);
             $task->setResponsible($taskResponsible);
             $task->setClient($taskClient);
             $task->setStart(new DateTime($taskStart));
-            $task->setEnd(new DateTime($taskStart));
+            $task->setEnd(new DateTime($taskEnd));
 
             $this->entityManager->persist($task);
             $this->entityManager->flush();
 
-            $io->success('Success, your task is no saved to the DB. Run app:tasks-export for .CSV export');
+            $io->success('Success, your task is now saved to the DB. Run app:tasks-export for .CSV export');
             return 0;
         }
 
