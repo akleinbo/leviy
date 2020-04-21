@@ -94,8 +94,8 @@ class TaskCreateCommand extends Command
             $task = new Tasks();
             $task->setTitle($taskTitle);
             $task->setDescription($taskTitle);
-            $task->setSpecialist($taskResponsible);
-            $task->setCompany($taskClient);
+            $task->setResponsible($taskResponsible);
+            $task->setClient($taskClient);
             $task->setStart(new DateTime($taskStart));
             $task->setEnd(new DateTime($taskStart));
 

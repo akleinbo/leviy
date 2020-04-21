@@ -30,12 +30,12 @@ class Tasks
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $specialist;
+    private $responsible;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $company;
+    private $client;
 
     /**
      * @ORM\Column(type="datetime")
@@ -117,33 +117,33 @@ class Tasks
     /**
      * @return mixed
      */
-    public function getSpecialist()
+    public function getResponsible()
     {
-        return $this->specialist;
+        return $this->responsible;
     }
 
     /**
-     * @param mixed $specialist
+     * @param mixed $responsible
      */
-    public function setSpecialist($specialist)
+    public function setResponsible($responsible)
     {
-        $this->specialist = $specialist;
+        $this->responsible = $responsible;
     }
 
     /**
      * @return mixed
      */
-    public function getCompany()
+    public function getClient()
     {
-        return $this->company;
+        return $this->client;
     }
 
     /**
-     * @param mixed $company
+     * @param mixed $client
      */
-    public function setCompany($company)
+    public function setClient($client)
     {
-        $this->company = $company;
+        $this->client = $client;
     }
 
     /**
