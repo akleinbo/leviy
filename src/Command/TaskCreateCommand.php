@@ -4,8 +4,11 @@ namespace App\Command;
 
 use App\Entity\Tasks;
 use DateTime;
+use Exception;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,6 +54,9 @@ class TaskCreateCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      * @return int
+     * @throws Exception
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
