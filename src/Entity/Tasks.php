@@ -6,9 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 use DateTime;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\SchedulesRepository")
+ * @ORM\Entity(repositoryClass="TasksRepository")
  */
-class Schedules
+class Tasks
 {
     /**
      * @ORM\Id()
@@ -58,7 +58,7 @@ class Schedules
     private $modified;
 
     /**
-     * Schedules constructor.
+     * Tasks constructor.
      */
     public function __construct()
     {
