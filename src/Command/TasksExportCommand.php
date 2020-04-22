@@ -8,9 +8,7 @@ use DatePeriod;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -98,7 +96,7 @@ class TasksExportCommand extends Command
         } elseif($task->getToRepeat() == 'monthly') {
             $interval = new DateInterval('P1M');
         } else {
-            $interval = new DateInterval();
+            $interval = new DateInterval('');
         }
 
         $end = new DateTime('now');
