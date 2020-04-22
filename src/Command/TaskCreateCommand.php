@@ -23,6 +23,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class TaskCreateCommand extends Command
 {
+    const FIRST_WEEKDAY_THE_MONTH = 'first weekday the month';
+    const LAST_WEEKDAY_THE_MONTH = 'last weekday the month';
+
     /**
      * @var string
      */
@@ -62,8 +65,8 @@ class TaskCreateCommand extends Command
         $taskDescription    = new Question('Please give your task a brief DESCRIPTION: ', 'Description');
         $taskResponsible    = new Question('Please assign task to RESPONSIBLE: ', 'Responsible');
         $taskClient         = new Question('Please assign task to CLIENT: ', 'Client');
-        $taskDuration       = new Question('Please enter task DURATION in minutes: ', 30);
-        $taskSchedule       = new ChoiceQuestion('Please SCHEDULE task: ', [
+        $taskDuration       = new Question('Please enter task DURATION in minutes(30): ', 30);
+        $taskSchedule       = new ChoiceQuestion('Please SCHEDULE task (monday): ', [
             'monday',
             'tuesday',
             'wednesday',
@@ -71,10 +74,10 @@ class TaskCreateCommand extends Command
             'friday',
             'saturday',
             'sunday',
-            'first weekday',
-            'last weekday',
+            self::FIRST_WEEKDAY_THE_MONTH,
+            self::LAST_WEEKDAY_THE_MONTH,
         ], 0);
-        $taskRepeat         = new ChoiceQuestion('Repeat task ', [
+        $taskRepeat         = new ChoiceQuestion('Repeat task(weekly): ', [
             'none',
             'daily',
             'weekly',
@@ -90,9 +93,6 @@ class TaskCreateCommand extends Command
         $taskSchedule       = $helper->ask($input, $output, $taskSchedule);
         $taskRepeat         = $helper->ask($input, $output, $taskRepeat);
 
-        # start
-        $taskStart = new DateTime('now');
-        $taskStart->setTimestamp(strtotime($taskSchedule));
         # output
         $io->title('Task Summary');
         $io->table(
@@ -103,8 +103,8 @@ class TaskCreateCommand extends Command
                 ['Responsible', $taskResponsible],
                 ['Client', $taskClient],
                 ['Duration', $taskDuration],
-                ['Date', $taskStart->format('Y-m-d')],
                 ['Scheduled', $taskSchedule],
+                ['Start', $this->getDateTime($taskSchedule)->format('Y-m-d')],
                 ['Repeat', $taskRepeat]
             ]
         );
@@ -119,7 +119,7 @@ class TaskCreateCommand extends Command
             $task->setClient($taskClient);
             $task->setDuration((int)$taskDuration);
             $task->setScheduled($taskSchedule);
-            $task->setStart($taskStart);
+            $task->setStart($this->getDateTime($taskSchedule));
             $task->setToRepeat($taskRepeat);
 
             $this->entityManager->persist($task);
@@ -130,5 +130,33 @@ class TaskCreateCommand extends Command
         }
 
         return 0;
+    }
+
+    /**
+     * @param $taskSchedule
+     * @return DateTime
+     */
+    public function getDateTime($taskSchedule)
+    {
+        if ($taskSchedule === self::FIRST_WEEKDAY_THE_MONTH) {
+            // todo: find the first weekday of workingday of a month
+            $dateTime = new DateTime('now');
+        } elseif ($taskSchedule === self::LAST_WEEKDAY_THE_MONTH) {
+            $dateTime = new DateTime('now');
+            $getDate = getdate(mktime(
+                null,
+                null,
+                null,
+                $dateTime->format('m') + 1,
+                0,
+                $dateTime->format('Y')
+            ));
+            $dateTime->setTimestamp($getDate[0]);
+        } else {
+            $dateTime = new DateTime('now');
+            $dateTime->setTimestamp(strtotime($taskSchedule));
+        }
+
+        return $dateTime;
     }
 }

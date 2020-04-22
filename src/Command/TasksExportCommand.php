@@ -53,18 +53,29 @@ class TasksExportCommand extends Command
 
         # tasks
         $tasks = [];
-        $tasks[] = ['Title', 'Description', 'Responsible', 'Client', 'Start', 'End', 'Total'];
+        $tasks[] = ['Title', 'Description', 'Responsible', 'Client', 'Duration', 'Scheduled', 'Start', 'Repeat'];
         foreach($this->entityManager->getRepository('App:Tasks')->findAll() as $task) {
-            $taskTotalTime = ($task->getEnd()->diff($task->getStart(), true));
+            // $taskTotalTime = ($task->getEnd()->diff($task->getStart(), true));
             $tasks[] = [
                 'title' => $task->getTitle(),
                 'description' => $task->getDescription(),
                 'responsible' => $task->getResponsible(),
                 'client' => $task->getClient(),
-                'start' => $task->getStart()->format('H:i'),
-                'end' => $task->getEnd()->format('H:i'),
-                'total' => $taskTotalTime->format('%H') . ':' . $taskTotalTime->format('%I')
+                'duration' => $task->getDuration(),
+                'scheduled' => $task->getScheduled(),
+                'start' => $task->getStart()->format('Y-m-d'),
+                'repeat' => $task->getToRepeat()
+                //'total' => $taskTotalTime->format('%H') . ':' . $taskTotalTime->format('%I')
             ];
+
+            //$task->setTitle($taskTitle);
+            //$task->setDescription($taskDescription);
+            //$task->setResponsible($taskResponsible);
+            //$task->setClient($taskClient);
+            //$task->setDuration((int)$taskDuration);
+            //$task->setScheduled($taskSchedule);
+            //$task->setStart($this->getDateTime($taskSchedule));
+            // $task->setToRepeat($taskRepeat);
         }
 
         $path = $userPath . '/Tasks-Export-' . date('YmdHis') . '.csv';
